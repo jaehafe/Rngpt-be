@@ -1,11 +1,14 @@
 package org.jh.oauthjwt.service;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import org.jh.oauthjwt.dto.JoinDTO;
 import org.jh.oauthjwt.dto.VerifyDTO;
 import org.jh.oauthjwt.entity.UserEntity;
 import org.jh.oauthjwt.global.exception.UserAlreadyVerifiedException;
 import org.jh.oauthjwt.repository.UserRepository;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +18,17 @@ public class JoinService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmailService emailService;
+    private final VerificationService verificationService;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailService emailService) {
+    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
+            EmailService emailService, VerificationService verificationService,
+            RedisTemplate<String, String> redisTemplate) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.emailService = emailService;
+        this.verificationService = verificationService;
+        this.redisTemplate = redisTemplate;
     }
 
 //    public void joinProcess(JoinDTO joinDTO) {
@@ -45,8 +54,8 @@ public class JoinService {
 
     public String initiateJoinProcess(JoinDTO joinDTO) {
         String email = joinDTO.getEmail();
-        Boolean isAlreadyVerified = userRepository.findByEmail(email)
-                .map(UserEntity::isVerified)
+
+        Boolean isAlreadyVerified = userRepository.findByEmail(email).map(UserEntity::isVerified)
                 .orElse(false);
         // 이메일이 이미 존재하고, 이미 인증된 사용자인 경우
         if (userRepository.existsByEmail(email) && isAlreadyVerified) {
@@ -60,10 +69,14 @@ public class JoinService {
         user.setUsername(joinDTO.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(joinDTO.getPassword()));
         user.setRole("ROLE_USER");
-        user.setVerificationCode(verificationCode);
+//        user.setVerificationCode(verificationCode);
         user.setVerified(false);
 
         userRepository.save(user);
+
+        // 인증 코드를 Redis에 3분 TTL과 함께 저장
+        ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
+        valueOps.set(email, verificationCode, 3, TimeUnit.MINUTES);
 
         emailService.sendVerificationEmail(email, verificationCode);
 
@@ -79,6 +92,14 @@ public class JoinService {
 
         if (user.isVerified()) {
             return "이미 인증된 사용자입니다.";
+        }
+
+        // Redis에서 인증 코드 가져오기
+        ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
+        String storedCode = valueOps.get(email);
+
+        if (storedCode == null) {
+            return "인증 코드가 만료되었습니다.";
         }
 
         if (user.getVerificationCode().equals(code)) {
