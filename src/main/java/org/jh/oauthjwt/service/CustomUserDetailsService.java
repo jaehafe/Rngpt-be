@@ -1,5 +1,6 @@
 package org.jh.oauthjwt.service;
 
+import java.util.Optional;
 import org.jh.oauthjwt.dto.CustomUserDetails;
 import org.jh.oauthjwt.entity.UserEntity;
 import org.jh.oauthjwt.repository.UserRepository;
@@ -17,15 +18,22 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//
+//        Optional<UserEntity> userData = userRepository.findByEmail(username);
+//
+//        if (userData != null) {
+//            return new CustomUserDetails(userData);
+//        }
+//
+//        return null;
+//    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(username).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with email: " + username));
 
-        UserEntity userData = userRepository.findByEmail(username);
-
-        if (userData != null) {
-            return new CustomUserDetails(userData);
-        }
-
-        return null;
+        return new CustomUserDetails(userEntity);
     }
 }
