@@ -27,7 +27,6 @@ public class JoinController {
     }
 
     @PostMapping("/verify")
-//    public ResponseEntity<String> verifyEmail(@RequestParam String email, @RequestParam String code) {
     public ResponseEntity<String> verifyEmail(@RequestBody VerifyDTO verifyDTO) {
         String result = joinService.verifyEmail(verifyDTO);
         return ResponseEntity.ok(result);
