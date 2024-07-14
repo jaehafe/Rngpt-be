@@ -4,6 +4,7 @@ import java.util.Random;
 import org.jh.oauthjwt.dto.JoinDTO;
 import org.jh.oauthjwt.dto.VerifyDTO;
 import org.jh.oauthjwt.entity.UserEntity;
+import org.jh.oauthjwt.global.exception.UserAlreadyVerifiedException;
 import org.jh.oauthjwt.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,32 +22,35 @@ public class JoinService {
         this.emailService = emailService;
     }
 
-    public void joinProcess(JoinDTO joinDTO) {
-
-        String email = joinDTO.getEmail();
-        String username = joinDTO.getUsername();
-        String password = joinDTO.getPassword();
-
-        Boolean isExist = userRepository.existsByEmail(email);
-
-        if (isExist) {
-
-            return;
-        }
-
-        UserEntity data = new UserEntity();
-        data.setEmail(email);
-        data.setUsername(username);
-        data.setPassword(bCryptPasswordEncoder.encode(password));
-        data.setRole("ROLE_ADMIN");
-
-        userRepository.save(data);
-    }
+//    public void joinProcess(JoinDTO joinDTO) {
+//
+//        String email = joinDTO.getEmail();
+//        String username = joinDTO.getUsername();
+//        String password = joinDTO.getPassword();
+//
+//        Boolean isExist = userRepository.existsByEmail(email);
+//        if (isExist) {
+////            throw new BadRequestException(ExceptionCode.ALREADY_EXISTS_USER);
+//            return;
+//        }
+//
+//        UserEntity data = new UserEntity();
+//        data.setEmail(email);
+//        data.setUsername(username);
+//        data.setPassword(bCryptPasswordEncoder.encode(password));
+//        data.setRole("ROLE_ADMIN");
+//
+//        userRepository.save(data);
+//    }
 
     public String initiateJoinProcess(JoinDTO joinDTO) {
         String email = joinDTO.getEmail();
-        if (userRepository.existsByEmail(email)) {
-            return "이미 존재하는 이메일입니다.";
+        Boolean isAlreadyVerified = userRepository.findByEmail(email)
+                .map(UserEntity::isVerified)
+                .orElse(false);
+        // 이메일이 이미 존재하고, 이미 인증된 사용자인 경우
+        if (userRepository.existsByEmail(email) && isAlreadyVerified) {
+            throw new UserAlreadyVerifiedException(400, "Email already exists and is verified.");
         }
 
         String verificationCode = generateVerificationCode();

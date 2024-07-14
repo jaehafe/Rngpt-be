@@ -1,6 +1,5 @@
 package org.jh.oauthjwt.service;
 
-import java.util.Optional;
 import org.jh.oauthjwt.dto.CustomUserDetails;
 import org.jh.oauthjwt.entity.UserEntity;
 import org.jh.oauthjwt.repository.UserRepository;
