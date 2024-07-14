@@ -27,15 +27,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-    private final ObjectMapper objectMapper;
-    private RefreshRepository refreshRepository;
+    private final RefreshRepository refreshRepository;
 
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
-            ObjectMapper objectMapper, RefreshRepository refreshRepository) {
+            RefreshRepository refreshRepository) {
 
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.objectMapper = objectMapper;
         this.refreshRepository = refreshRepository;
     }
 
@@ -44,15 +42,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response) throws AuthenticationException {
 
         LoginDTO loginDTO = new LoginDTO();
-
-//        try {
-//            // JSON 형식의 바디를 파싱하여 사용자 이름과 비밀번호를 추출합니다.
-//            Map<String, String> requestMap = objectMapper.readValue(request.getInputStream(), Map.class);
-//            username = requestMap.get("username");
-//            password = requestMap.get("password");
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
