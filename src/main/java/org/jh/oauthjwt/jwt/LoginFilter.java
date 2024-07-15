@@ -8,9 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.*;
+
 import org.jh.oauthjwt.dto.LoginDTO;
 import org.jh.oauthjwt.entity.RefreshEntity;
 import org.jh.oauthjwt.repository.RefreshRepository;
@@ -70,7 +69,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 성공 시 실행하는 메서드 (여기서 JWT를 발급하면 됨)
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
-            HttpServletResponse response, FilterChain chain, Authentication authentication) {
+            HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
         // 유저 정보
         String username = authentication.getName();
@@ -91,6 +90,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("accessToken", access);
+        responseBody.put("refreshToken", refresh);
+
+        // 응답 설정
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+        response.setStatus(HttpStatus.OK.value());
     }
 
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
@@ -99,6 +109,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
+//        refreshEntity.setEmail();
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
 

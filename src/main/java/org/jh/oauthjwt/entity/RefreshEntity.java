@@ -17,6 +17,7 @@ public class RefreshEntity {
     private Long id;
 
     private String username;
+    private String email;
     private String refresh;
     private String expiration;
 }

@@ -24,4 +24,6 @@ public class UserEntity {
 
     private String verificationCode;
     private boolean isVerified = false;
+
+    private String provider;
 }
