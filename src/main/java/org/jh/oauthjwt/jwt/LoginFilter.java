@@ -86,21 +86,35 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // Refresh 토큰 저장
         addRefreshEntity(username, refresh, 8640000L);
 
-        // 응답  설정
-        response.setHeader("access", access);
-        response.addCookie(createCookie("refresh", refresh));
-        response.setStatus(HttpStatus.OK.value());
+        // refreshToken을 쿠키에 설정
+        Cookie refreshCookie = createCookie("refreshToken", refresh);
+        response.addCookie(refreshCookie);
 
+        // accessToken을 응답 본문에 포함
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("accessToken", access);
-        responseBody.put("refreshToken", refresh);
 
-        // 응답 설정
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(responseBody));
         response.setStatus(HttpStatus.OK.value());
+
+//        // 응답  설정
+//        response.setHeader("access", access);
+//        response.addCookie(createCookie("refresh", refresh));
+//        response.setStatus(HttpStatus.OK.value());
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Map<String, String> responseBody = new HashMap<>();
+//        responseBody.put("accessToken", access);
+//        responseBody.put("refreshToken", refresh);
+//
+//        // 응답 설정
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+//        response.setStatus(HttpStatus.OK.value());
     }
 
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
@@ -128,8 +142,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24 * 60 * 60);
-//        cookie.setSecure(true);
-//        cookie.setPath("/");
+        // cookie.setSecure(true);  // HTTPS에서만 사용하도록 설정 (프로덕션 환경에서 활성화)
+        cookie.setPath("/");
         cookie.setHttpOnly(true);
 
         return cookie;
