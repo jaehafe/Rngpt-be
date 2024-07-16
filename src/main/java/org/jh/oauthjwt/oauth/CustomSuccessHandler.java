@@ -66,7 +66,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         } else if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
-            email = username; // 이메일 로그인의 경우 username이 이메일일 것입니다.
+            email = username;
             role = userDetails.getAuthorities().iterator().next().getAuthority();
         } else {
             throw new IllegalArgumentException("Unsupported principal type");
@@ -79,8 +79,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refresh = jwtUtil.createJwt("refresh", username, email, role, refreshTokenValidityInMilliseconds);
 
         saveRefreshToken(email, refresh, refreshTokenValidityInMilliseconds);
-
-        System.out.println("access + refresh = " + access + " " + refresh);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
