@@ -111,7 +111,9 @@ public class SecurityConfig {
                                 "/oauth2/**",
                                 "/send-notification",
                                 "/fcm-token",
-                                "/logout"
+                                "/logout",
+                                "/refresh",
+                                "/test-controller"
                         )
                         .permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")

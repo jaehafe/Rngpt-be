@@ -72,8 +72,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             throw new IllegalArgumentException("Unsupported principal type");
         }
 
-        long accessTokenValidityInMilliseconds = 600000L; // 10분
-        long refreshTokenValidityInMilliseconds = 8640000L; // 24시간
+//        long accessTokenValidityInMilliseconds = 600000L; // 10분
+//        long refreshTokenValidityInMilliseconds = 8640000L; // 2시간 20분
+        long accessTokenValidityInMilliseconds = 10000L; // 10초
+        long refreshTokenValidityInMilliseconds = 60000L; // 1분
+
 
         String access = jwtUtil.createJwt("access", username, email, role, accessTokenValidityInMilliseconds);
         String refresh = jwtUtil.createJwt("refresh", username, email, role, refreshTokenValidityInMilliseconds);

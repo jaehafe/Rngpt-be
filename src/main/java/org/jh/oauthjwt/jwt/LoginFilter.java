@@ -84,12 +84,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+        long accessTokenValidityInMilliseconds = 10000L; // 10초
+        long refreshTokenValidityInMilliseconds = 60000L; // 1분
+
         // 토큰
-        String access = jwtUtil.createJwt("access", username, email, role, 600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, email, role, 8640000L);
+        String access = jwtUtil.createJwt("access", username, email, role, accessTokenValidityInMilliseconds);
+        String refresh = jwtUtil.createJwt("refresh", username, email, role, refreshTokenValidityInMilliseconds);
 
         // Refresh 토큰 저장
-        addRefreshEntity(username, email, refresh,8640000L);
+        addRefreshEntity(username, email, refresh,refreshTokenValidityInMilliseconds);
 
         // refreshToken을 쿠키에 설정
         Cookie refreshCookie = createCookie("refreshToken", refresh);
