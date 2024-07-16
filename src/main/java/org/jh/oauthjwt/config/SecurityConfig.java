@@ -2,12 +2,12 @@ package org.jh.oauthjwt.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import org.jh.oauthjwt.jwt.CustomLogoutFilter;
 import org.jh.oauthjwt.jwt.JWTFilter;
 import org.jh.oauthjwt.jwt.JWTUtil;
 import org.jh.oauthjwt.jwt.LoginFilter;
 import org.jh.oauthjwt.oauth.CustomOAuth2UserService;
 import org.jh.oauthjwt.oauth.CustomSuccessHandler;
+import org.jh.oauthjwt.refreshToken.RefreshTokenService;
 import org.jh.oauthjwt.repository.RefreshRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +37,7 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
     private final RefreshRepository refreshRepository;
+    private final RefreshTokenService refreshTokenService;
 
     public SecurityConfig(
             AuthenticationConfiguration authenticationConfiguration,
@@ -44,7 +45,8 @@ public class SecurityConfig {
             ObjectMapper objectMapper,
             RefreshRepository refreshRepository,
             CustomOAuth2UserService customOAuth2UserService,
-            CustomSuccessHandler customSuccessHandler
+            CustomSuccessHandler customSuccessHandler,
+            RefreshTokenService refreshTokenService
     ) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
@@ -52,6 +54,7 @@ public class SecurityConfig {
         this.refreshRepository = refreshRepository;
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
+        this.refreshTokenService = refreshTokenService;
     }
 
     // AuthenticationManager Bean 등록
@@ -108,7 +111,8 @@ public class SecurityConfig {
                                 "/verify",
                                 "/oauth2/**",
                                 "/send-notification",
-                                "/fcm-token"
+                                "/fcm-token",
+                                "/logout"
                         )
                         .permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
@@ -127,11 +131,11 @@ public class SecurityConfig {
                 .successHandler(customSuccessHandler)
         );
 
-        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+        http.addFilterBefore(new JWTFilter(jwtUtil, refreshTokenService), LoginFilter.class);
 
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper, refreshRepository), UsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+//        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         // 세션 설정
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

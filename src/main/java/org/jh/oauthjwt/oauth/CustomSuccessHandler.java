@@ -30,14 +30,15 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                         Authentication authentication) throws IOException, ServletException {
         CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
 
+        String username = oauthUser.getName();
         String email = oauthUser.getEmail();
         String role = oauthUser.getAuthorities().iterator().next().getAuthority();
 
         long accessTokenValidityInMilliseconds = 600000L; // 10분
         long refreshTokenValidityInMilliseconds = 8640000L; // 24시간
 
-        String access = jwtUtil.createJwt("access", email, role, accessTokenValidityInMilliseconds);
-        String refresh = jwtUtil.createJwt("refresh", email, role, refreshTokenValidityInMilliseconds);
+        String access = jwtUtil.createJwt("access", username, email, role, accessTokenValidityInMilliseconds);
+        String refresh = jwtUtil.createJwt("refresh", username, email, role, refreshTokenValidityInMilliseconds);
 
         saveRefreshToken(email, refresh, refreshTokenValidityInMilliseconds);
 

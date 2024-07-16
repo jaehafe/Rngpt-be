@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import org.jh.oauthjwt.dto.CustomUserDetails;
 import org.jh.oauthjwt.dto.LoginDTO;
 import org.jh.oauthjwt.entity.RefreshEntity;
 import org.jh.oauthjwt.repository.RefreshRepository;
@@ -72,7 +73,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
         // 유저 정보
-        String username = authentication.getName();
+//        String username = authentication.getName();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        String email = userDetails.getEmail();
+
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -80,11 +85,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         // 토큰
-        String access = jwtUtil.createJwt("access", username, role, 600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, 8640000L);
+        String access = jwtUtil.createJwt("access", username, email, role, 600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, email, role, 8640000L);
 
         // Refresh 토큰 저장
-        addRefreshEntity(username, refresh, 8640000L);
+        addRefreshEntity(username, email, refresh,8640000L);
 
         // refreshToken을 쿠키에 설정
         Cookie refreshCookie = createCookie("refreshToken", refresh);
@@ -117,13 +122,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //        response.setStatus(HttpStatus.OK.value());
     }
 
-    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+    private void addRefreshEntity(String username, String email, String refresh, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
-//        refreshEntity.setEmail();
+        refreshEntity.setEmail(email);
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
 
