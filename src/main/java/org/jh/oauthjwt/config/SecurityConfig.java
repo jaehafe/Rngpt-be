@@ -99,7 +99,15 @@ public class SecurityConfig {
         http.httpBasic((auth) -> auth.disable());
 
         // 경로별 인가 작업
-        http.authorizeHttpRequests((auth) -> auth.requestMatchers("/login", "/", "/join", "/verify", "/oauth2/**").permitAll().requestMatchers("/admin").hasRole("ADMIN").requestMatchers("/reissue").permitAll().anyRequest().authenticated()
+        http.authorizeHttpRequests((auth) ->
+                auth
+                        .requestMatchers("/login", "/", "/join", "/verify", "/oauth2/**", "/send-notification")
+                        .permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/reissue")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
 
         );
 
