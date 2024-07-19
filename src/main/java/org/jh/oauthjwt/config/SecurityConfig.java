@@ -113,7 +113,8 @@ public class SecurityConfig {
                                 "/fcm-token",
                                 "/logout",
                                 "/refresh",
-                                "/test-controller"
+                                "/test-controller",
+                                "/api/todo"
                         )
                         .permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")

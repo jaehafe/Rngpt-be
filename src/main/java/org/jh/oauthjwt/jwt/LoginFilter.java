@@ -84,8 +84,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        long accessTokenValidityInMilliseconds = 10000L; // 10초
-        long refreshTokenValidityInMilliseconds = 60000L; // 1분
+//        long accessTokenValidityInMilliseconds = 10000L; // 10초
+//        long refreshTokenValidityInMilliseconds = 60000L; // 1분
+        long accessTokenValidityInMilliseconds = 600000L; // 10분
+        long refreshTokenValidityInMilliseconds = 8640000L; // 2시간 20분
 
         // 토큰
         String access = jwtUtil.createJwt("access", username, email, role, accessTokenValidityInMilliseconds);
