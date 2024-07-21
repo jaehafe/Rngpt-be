@@ -10,6 +10,8 @@ import org.jh.oauthjwt.todo.dto.request.TodoRequest;
 import org.jh.oauthjwt.todo.dto.response.TodoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,14 +31,19 @@ public class TodoService {
     }
 
     // todo 전체 가져오기
-    public List<TodoResponse> getAllTodos() {
-        final List<Todo> todos = todoRepository.findAll();
-        if (todos.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return todos.stream()
-                .map(TodoResponse::of)
-                .toList();
+//    public List<TodoResponse> getAllTodos() {
+//        final List<Todo> todos = todoRepository.findAll();
+//        if (todos.isEmpty()) {
+//            return Collections.emptyList();
+//        }
+//        return todos.stream()
+//                .map(TodoResponse::of)
+//                .toList();
+//    }
+    // pagination
+    public Page<TodoResponse> getAllTodos(Pageable pageable) {
+        Page<Todo> todoPage = todoRepository.findAll(pageable);
+        return todoPage.map(TodoResponse::of);
     }
 
     // todo 생성
