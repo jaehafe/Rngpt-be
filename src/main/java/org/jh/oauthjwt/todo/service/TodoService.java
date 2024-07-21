@@ -21,6 +21,13 @@ public class TodoService {
 
     private static final Logger logger = LoggerFactory.getLogger(TodoService.class);
 
+    // todo 가져오기
+    public TodoResponse getTodo(Long id) {
+        final Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("할 일이 없습니다."));
+        return TodoResponse.of(todo);
+    }
+
     // todo 전체 가져오기
     public List<TodoResponse> getAllTodos() {
         final List<Todo> todos = todoRepository.findAll();

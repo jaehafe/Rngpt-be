@@ -30,6 +30,12 @@ public class TodoController {
         this.todoService = todoService;
     }
 
+    @GetMapping("/todo/{id}")
+    public ResponseEntity<TodoResponse> getTodo(@PathVariable final Long id) {
+        final TodoResponse todoResponse = todoService.getTodo(id);
+        return ResponseEntity.ok(todoResponse);
+    }
+
     @GetMapping("/todos")
     public ResponseEntity<List<TodoResponse>> getTodos() {
         final List<TodoResponse> todoResponses = todoService.getAllTodos();
