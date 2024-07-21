@@ -32,4 +32,11 @@ public class TodoService {
     public void createTodo(final TodoRequest todoRequest) {
         todoRepository.save(Todo.of(todoRequest));
     }
+
+    // todo update
+    public void updateTodo(final Long id, final TodoRequest todoRequest) {
+        final Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 todo가 없습니다. id: " + id));
+        todo.update(todoRequest);
+    }
 }

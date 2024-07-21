@@ -114,7 +114,7 @@ public class SecurityConfig {
                                 "/logout",
                                 "/refresh",
                                 "/test-controller",
-                                "/api/todos"
+                                "/api/**"
                         )
                         .permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")

@@ -6,6 +6,7 @@ import org.jh.oauthjwt.todo.dto.response.TodoResponse;
 import org.jh.oauthjwt.todo.service.TodoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,12 @@ public class TodoController {
     @PostMapping("/todos")
     public ResponseEntity<Void> createTodo(@RequestBody final TodoRequest todoRequest) {
         todoService.createTodo(todoRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/todos/{id}")
+    public ResponseEntity<Void> updateTodo(@PathVariable final Long id, @RequestBody final TodoRequest todoRequest) {
+        todoService.updateTodo(id, todoRequest);
         return ResponseEntity.ok().build();
     }
 }
