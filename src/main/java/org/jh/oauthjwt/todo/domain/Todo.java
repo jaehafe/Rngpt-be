@@ -43,6 +43,9 @@ public class Todo extends BaseEntity {
     @Column(nullable = true)
     private PriorityType priority;
 
+    @Column(nullable = false)
+    private boolean notified = false;
+
     private Todo(String title, String body, LocalDateTime dueDate) {
         this.title = title;
         this.body = body;
