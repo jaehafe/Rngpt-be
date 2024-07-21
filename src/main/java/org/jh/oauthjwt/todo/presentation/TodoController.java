@@ -58,13 +58,13 @@ public class TodoController {
     }
 
     @PostMapping("/todos")
-    public ResponseEntity<Void> createTodo(@RequestBody final CreateTodoRequest todoRequest) {
+    public ResponseEntity<Void> createTodo(@RequestBody @Valid final CreateTodoRequest todoRequest) {
         todoService.createTodo(todoRequest);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/todos/{id}")
-    public ResponseEntity<Void> updateTodo(@PathVariable final Long id, @RequestBody final UpdateTodoRequest updateRequest) {
+    public ResponseEntity<Void> updateTodo(@PathVariable @Valid final Long id, @RequestBody final UpdateTodoRequest updateRequest) {
         todoService.updateTodo(id, updateRequest);
         return ResponseEntity.ok().build();
     }

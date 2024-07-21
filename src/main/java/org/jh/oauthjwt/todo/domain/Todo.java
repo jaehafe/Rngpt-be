@@ -36,7 +36,7 @@ public class Todo extends BaseEntity {
     @Column(nullable = false)
     private boolean isCompleted = false;
 
-    @Column
+    @Column(nullable = true)
     private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)

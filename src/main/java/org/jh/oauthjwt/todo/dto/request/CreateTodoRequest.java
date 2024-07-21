@@ -20,7 +20,7 @@ public class CreateTodoRequest {
     @Size(max = 100, message = "할 일의 내용은 100자를 초과할 수 없습니다.")
     private final String body;
 
-    @NotNull(message = "할 일의 마감일을 입력해주세요.")
+//    @NotNull(message = "할 일의 마감일을 입력해주세요.")
     private final LocalDateTime dueDate;
 
     private final PriorityType priority;
