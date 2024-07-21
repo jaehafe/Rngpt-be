@@ -6,10 +6,11 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.jh.oauthjwt.todo.domain.type.PriorityType;
 
 @Getter
 @AllArgsConstructor
-public class TodoRequest {
+public class CreateTodoRequest {
 
     @NotBlank(message = "할 일의 이름을 입력해주세요.")
     @Size(max = 20, message = "할 일의 이름은 20자를 초과할 수 없습니다.")
@@ -21,4 +22,6 @@ public class TodoRequest {
 
     @NotNull(message = "할 일의 마감일을 입력해주세요.")
     private final LocalDateTime dueDate;
+
+    private final PriorityType priority;
 }

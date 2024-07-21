@@ -1,12 +1,11 @@
 package org.jh.oauthjwt.todo.service;
 
 import jakarta.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jh.oauthjwt.todo.domain.Todo;
 import org.jh.oauthjwt.todo.domain.repository.TodoRepository;
-import org.jh.oauthjwt.todo.dto.request.TodoRequest;
+import org.jh.oauthjwt.todo.dto.request.CreateTodoRequest;
+import org.jh.oauthjwt.todo.dto.request.UpdateTodoRequest;
 import org.jh.oauthjwt.todo.dto.response.TodoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,16 +29,6 @@ public class TodoService {
         return TodoResponse.of(todo);
     }
 
-    // todo 전체 가져오기
-//    public List<TodoResponse> getAllTodos() {
-//        final List<Todo> todos = todoRepository.findAll();
-//        if (todos.isEmpty()) {
-//            return Collections.emptyList();
-//        }
-//        return todos.stream()
-//                .map(TodoResponse::of)
-//                .toList();
-//    }
     // pagination
     public Page<TodoResponse> getAllTodos(Pageable pageable) {
         Page<Todo> todoPage = todoRepository.findAll(pageable);
@@ -47,15 +36,15 @@ public class TodoService {
     }
 
     // todo 생성
-    public void createTodo(final TodoRequest todoRequest) {
+    public void createTodo(final CreateTodoRequest todoRequest) {
         todoRepository.save(Todo.of(todoRequest));
     }
 
     // todo update
-    public void updateTodo(final Long id, final TodoRequest todoRequest) {
+    public void updateTodo(final Long id, final UpdateTodoRequest updateRequest) {
         final Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 id의 todo가 없습니다. id: " + id));
-        todo.update(todoRequest);
+        todo.update(updateRequest);
     }
 
     // todo 완료

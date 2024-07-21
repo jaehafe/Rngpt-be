@@ -1,9 +1,9 @@
 package org.jh.oauthjwt.todo.presentation;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import org.jh.oauthjwt.todo.dto.request.TodoCompletionRequest;
-import org.jh.oauthjwt.todo.dto.request.TodoRequest;
+import org.jh.oauthjwt.todo.dto.request.CreateTodoRequest;
+import org.jh.oauthjwt.todo.dto.request.UpdateTodoRequest;
 import org.jh.oauthjwt.todo.dto.response.TodoResponse;
 import org.jh.oauthjwt.todo.service.TodoService;
 import org.slf4j.Logger;
@@ -58,14 +58,14 @@ public class TodoController {
     }
 
     @PostMapping("/todos")
-    public ResponseEntity<Void> createTodo(@RequestBody final TodoRequest todoRequest) {
+    public ResponseEntity<Void> createTodo(@RequestBody final CreateTodoRequest todoRequest) {
         todoService.createTodo(todoRequest);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/todos/{id}")
-    public ResponseEntity<Void> updateTodo(@PathVariable final Long id, @RequestBody final TodoRequest todoRequest) {
-        todoService.updateTodo(id, todoRequest);
+    public ResponseEntity<Void> updateTodo(@PathVariable final Long id, @RequestBody final UpdateTodoRequest updateRequest) {
+        todoService.updateTodo(id, updateRequest);
         return ResponseEntity.ok().build();
     }
 
