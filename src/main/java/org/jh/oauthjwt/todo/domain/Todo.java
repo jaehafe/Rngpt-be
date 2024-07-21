@@ -9,11 +9,13 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jh.oauthjwt.global.BaseEntity;
 import org.jh.oauthjwt.todo.dto.request.TodoRequest;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Todo extends BaseEntity {
 
