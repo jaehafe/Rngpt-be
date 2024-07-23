@@ -38,3 +38,7 @@ out/
 
 ### firebase admin sdk ###
 /src/main/resources/firebase
+
+
+### mac os ###
+.DS_Store
