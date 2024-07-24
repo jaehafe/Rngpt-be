@@ -1,11 +1,12 @@
 package org.jh.oauthjwt.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.jh.oauthjwt.todo.domain.Todo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Setter
@@ -26,4 +27,7 @@ public class UserEntity {
     private boolean isVerified = false;
 
     private String provider;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Todo> todos = new ArrayList<>();
 }

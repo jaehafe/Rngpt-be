@@ -1,6 +1,5 @@
 package org.jh.oauthjwt.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,8 +7,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Map;
 
 import org.jh.oauthjwt.dto.CustomUserDetails;
 import org.jh.oauthjwt.entity.UserEntity;
@@ -17,7 +14,6 @@ import org.jh.oauthjwt.refreshToken.RefreshTokenService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -57,24 +53,6 @@ public class JWTFilter extends OncePerRequestFilter {
 //            logger.error("JWT token error: {}", e.getMessage());
             handleInvalidToken(response, "Invalid JWT token: " + e.getMessage());
         }
-
-//        if (accessToken == null || !accessToken.startsWith("Bearer ")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-//
-//        accessToken = accessToken.substring(7);
-//
-//        try {
-//            if (!jwtUtil.isExpired(accessToken)) {
-//                setAuthenticationToContext(accessToken);
-//                filterChain.doFilter(request, response);
-//            } else {
-//                handleExpiredToken(request, response, filterChain);
-//            }
-//        } catch (ExpiredJwtException e) {
-//            handleExpiredToken(request, response, filterChain);
-//        }
     }
 
     private void handleExpiredToken(HttpServletRequest request, HttpServletResponse response,
@@ -133,10 +111,9 @@ public class JWTFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
-    private void handleInvalidToken(HttpServletResponse response, String message) throws IOException {
+    private void handleInvalidToken(HttpServletResponse response, String message) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-//        response.getWriter().write(objectMapper.writeValueAsString(Map.of("error", message)));
     }
 }

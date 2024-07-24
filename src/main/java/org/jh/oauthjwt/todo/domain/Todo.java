@@ -1,17 +1,13 @@
 package org.jh.oauthjwt.todo.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jh.oauthjwt.entity.UserEntity;
 import org.jh.oauthjwt.global.BaseEntity;
 import org.jh.oauthjwt.todo.domain.type.CategoryType;
 import org.jh.oauthjwt.todo.domain.type.PriorityType;
@@ -51,6 +47,10 @@ public class Todo extends BaseEntity {
     @Column(nullable = true)
     private CategoryType category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity creator;
+
     private Todo(String title, String body, LocalDateTime dueDate) {
         this.title = title;
         this.body = body;
@@ -58,12 +58,13 @@ public class Todo extends BaseEntity {
         this.dueDate = dueDate;
     }
 
-    public static Todo of(final CreateTodoRequest todoRequest) {
+    public static Todo of(final CreateTodoRequest todoRequest, UserEntity creator) {
         Todo todo = new Todo(
                 todoRequest.getTitle(),
                 todoRequest.getBody(),
                 todoRequest.getDueDate()
         );
+        todo.setCreator(creator);
         todo.setPriority(todoRequest.getPriority());
         todo.setCategory(todoRequest.getCategory());
         return todo;
