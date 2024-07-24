@@ -23,7 +23,7 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    private static final Logger logger = LoggerFactory.getLogger(TodoService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TodoController.class);
 
     public TodoController(final TodoService todoService) {
         this.todoService = todoService;
