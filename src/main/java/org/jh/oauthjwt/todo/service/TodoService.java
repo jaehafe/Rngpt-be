@@ -1,6 +1,7 @@
 package org.jh.oauthjwt.todo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jh.oauthjwt.global.exception.InvalidCategoryException;
 import org.jh.oauthjwt.todo.domain.Todo;
 import org.jh.oauthjwt.todo.domain.repository.TodoRepository;
 import org.jh.oauthjwt.todo.domain.type.CategoryType;
@@ -51,7 +52,6 @@ public class TodoService {
         if (todoRequest.getTitle() == null || todoRequest.getTitle().trim().isEmpty()) {
             throw new IllegalArgumentException("Todo 제목은 비어있을 수 없습니다.");
         }
-        // 필요한 경우 추가적인 유효성 검사 로직
     }
 
     // todo update
@@ -65,7 +65,7 @@ public class TodoService {
     @Transactional
     public void updateTodoCompletion(Long id, boolean isCompleted) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Todo not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Todo를 찾을 수 없습니다. ID: " + id));
         todo.setCompleted(isCompleted);
     }
 
@@ -79,7 +79,21 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public List<TodoResponse> getTodosByCategory(String category) {
-        List<Todo> todos = todoRepository.findByCategory(CategoryType.valueOf(category));
+
+        CategoryType categoryType;
+        try {
+            categoryType = CategoryType.valueOf(category.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCategoryException("유효하지 않은 카테고리입니다: " + category);
+        }
+
+        List<Todo> todos = todoRepository.findByCategory(categoryType);
+
+        if (todos.isEmpty()) {
+            logger.info("카테고리 '{}' 에 해당하는 할 일이 없습니다.", category);
+            // 여기서 빈 리스트를 반환하거나, 특별한 응답을 생성할 수 있습니다.
+        }
+
         return todos.stream()
                 .map(TodoResponse::of)
                 .toList();

@@ -34,4 +34,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(e.getCode(), e.getMessage()));
     }
+
+    @ExceptionHandler(InvalidCategoryException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCategoryException(InvalidCategoryException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(1000, ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }
