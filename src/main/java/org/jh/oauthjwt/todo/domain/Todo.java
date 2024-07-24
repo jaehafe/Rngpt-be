@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jh.oauthjwt.global.BaseEntity;
+import org.jh.oauthjwt.todo.domain.type.CategoryType;
 import org.jh.oauthjwt.todo.domain.type.PriorityType;
 import org.jh.oauthjwt.todo.dto.request.CreateTodoRequest;
 import org.jh.oauthjwt.todo.dto.request.UpdateTodoRequest;
@@ -30,7 +31,7 @@ public class Todo extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String body;
 
     @Column(nullable = false)
@@ -46,6 +47,10 @@ public class Todo extends BaseEntity {
     @Column(nullable = false)
     private boolean notified = false;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private CategoryType category;
+
     private Todo(String title, String body, LocalDateTime dueDate) {
         this.title = title;
         this.body = body;
@@ -60,6 +65,7 @@ public class Todo extends BaseEntity {
                 todoRequest.getDueDate()
         );
         todo.setPriority(todoRequest.getPriority());
+        todo.setCategory(todoRequest.getCategory());
         return todo;
     }
 
@@ -79,11 +85,12 @@ public class Todo extends BaseEntity {
         if (request.getIsCompleted() != null) {
             this.isCompleted = request.getIsCompleted();
         }
+        if (request.getCategory() != null) {
+            this.category = request.getCategory();
+        }
     }
 
-//
-//    @Enumerated(EnumType.STRING)
-//    private Category category;
+
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")

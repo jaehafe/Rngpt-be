@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jh.oauthjwt.todo.domain.type.CategoryType;
 import org.jh.oauthjwt.todo.domain.type.PriorityType;
 
 @Getter
@@ -21,6 +22,8 @@ public class UpdateTodoRequest {
     private LocalDateTime dueDate;
 
     private PriorityType priority;
+
+    private CategoryType category;
 
     private Boolean isCompleted;
 }

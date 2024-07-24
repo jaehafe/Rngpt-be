@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jh.oauthjwt.todo.domain.Todo;
 
+import java.util.List;
+
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodoResponse {
