@@ -22,7 +22,7 @@ public class TodoNotificationScheduler {
     }
 
 //    @Scheduled(fixedRate = 60000) // 1분마다 실행
-//    @Scheduled(fixedRate = 3000) // 5초마다 실행
+    @Scheduled(fixedRate = 50000000) // 5초마다 실행
     public void checkAndNotify() {
         log.info("Starting scheduled task: checkAndNotify at {}", LocalDateTime.now());
 

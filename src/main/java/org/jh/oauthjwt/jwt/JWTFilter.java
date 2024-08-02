@@ -8,23 +8,30 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
 import org.jh.oauthjwt.dto.CustomUserDetails;
 import org.jh.oauthjwt.entity.UserEntity;
 import org.jh.oauthjwt.refreshToken.RefreshTokenService;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtException;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    public JWTFilter(JWTUtil jwtUtil, RefreshTokenService refreshTokenService) {
-        this.jwtUtil = jwtUtil;
-        this.refreshTokenService = refreshTokenService;
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return pathMatcher.match("/verify", path) ||
+                (HttpMethod.POST.matches(request.getMethod()) && pathMatcher.match("/verify", path));
     }
 
     @Override

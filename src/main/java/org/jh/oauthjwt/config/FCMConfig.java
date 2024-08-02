@@ -15,24 +15,10 @@ import java.util.List;
 @Configuration
 public class FCMConfig {
 
-//    @Bean
-//    FirebaseMessaging firebaseMessaging() throws IOException {
-//        ClassPathResource resource = new ClassPathResource("firebase/rngpt-e1a44-firebase-adminsdk-adefg-f1413dd360.json");
-//
-//        GoogleCredentials googleCredentials = GoogleCredentials
-//                .fromStream(resource.getInputStream());
-//        FirebaseOptions firebaseOptions = FirebaseOptions
-//                .builder()
-//                .setCredentials(googleCredentials)
-//                .build();
-//
-//        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions);
-//        return FirebaseMessaging.getInstance(app);
-//    }
-
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
-        ClassPathResource resource = new ClassPathResource("firebase/rngpt-e1a44-firebase-adminsdk-adefg-f1413dd360.json");
+//        ClassPathResource resource = new ClassPathResource("firebase/rngpt-e1a44-firebase-adminsdk-adefg-f1413dd360.json");
+        ClassPathResource resource = new ClassPathResource("firebase/mapletask-c0f85-firebase-adminsdk-c51a1-d783fd15d3.json");
         InputStream refreshToken = resource.getInputStream();
 
         FirebaseApp firebaseApp = null;
